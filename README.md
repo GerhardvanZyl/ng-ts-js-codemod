@@ -1,2 +1,2 @@
 # ng-ts-js-codemod
-JSCodemod transforms based on jscodeshift, specifically for angular/typescript.
+JSCodemod transforms specifically for angular/typescript based on jscodeshift.

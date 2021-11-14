@@ -2,7 +2,6 @@
   "name": "ng-ts-js-codemod",
   "version": "1.0.0",
   "description": "JSCodemod transforms specifically for angular/typescript based on jscodeshift.",
-  "main": "jest.config.js",
   "directories": {
     "test": "test"
   },

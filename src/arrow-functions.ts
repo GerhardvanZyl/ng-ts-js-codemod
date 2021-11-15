@@ -24,12 +24,14 @@ const transform = (fileInfo: FileInfo, api: API) => {
             // () => { return a + b;}
             // We can move the statement to directly after the =>, like so:
             // () => a + b;
-            if (fn.body.type === cs.BlockStatement.name) {
-                if (fn.body.body.length === 1) {
-                    if (fn.body.body[0].type === cs.ReturnStatement.name) {
-                        fn.body = fn.body.body[0].argument;
+
+            // Is there a way to do this without using any?
+            if (fn.body.type === (cs.BlockStatement as any).name) {
+                if ((fn.body as any).body.length === 1) {
+                    if ((fn.body as any).body[0].type === (cs.ReturnStatement as any).name) {
+                        fn.body = (fn.body as any).body[0].argument;
                     } else {
-                        fn.body = fn.body.body[0].expression;;
+                        fn.body = (fn.body as any).body[0].expression;;
                     }
                 }
             }

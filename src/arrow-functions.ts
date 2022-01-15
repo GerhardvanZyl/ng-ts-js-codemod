@@ -5,12 +5,21 @@ const transform = (fileInfo: FileInfo, api: API) => {
     const cs = api.jscodeshift;
     const root = cs(fileInfo.source);
 
-    // First convert all the functions to arrow functions
+    // First find all the FunctionExpressions.
+    // .find will find everything recursively.
+    // The class methods are of type MethodDefinition, so these will not be included.
     root.find(cs.FunctionExpression)
         .forEach(fnPath => {
+
+            // Get the function object
             const { value: fn } = fnPath;
+
+            // Use the convenient helper method to convert a
+            // Function Expression to an Arrow Function Expression,
+            // using the params and body from the existing function expression
             const arrowFn = cs.arrowFunctionExpression(fn.params, fn.body, fn.generator);
 
+            // Replace the existing Function Expression with the Arrow Function Expression
             cs(fnPath).replaceWith(arrowFn);
         });
 
@@ -25,14 +34,13 @@ const transform = (fileInfo: FileInfo, api: API) => {
             // We can move the statement to directly after the =>, like so:
             // () => a + b;
 
-            // Is there a way to do this without using any?
-            if (fn.body.type === (cs.BlockStatement as any).name) {
-                if ((fn.body as any).body.length === 1) {
-                    if ((fn.body as any).body[0].type === (cs.ReturnStatement as any).name) {
-                        fn.body = (fn.body as any).body[0].argument;
-                    } else {
-                        fn.body = (fn.body as any).body[0].expression;;
-                    }
+            if (fn.body.type === (cs.BlockStatement as any).name
+                && (fn.body as any).body.length === 1){
+
+                if ((fn.body as any).body[0].type === (cs.ReturnStatement as any).name) {
+                    fn.body = (fn.body as any).body[0].argument;
+                } else {
+                    fn.body = (fn.body as any).body[0].expression;;
                 }
             }
         });

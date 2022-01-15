@@ -4,8 +4,6 @@ const subscribeMethods = ['next', 'error', 'complete'];
 
 const transform = (fileInfo: FileInfo, api: API) => {
 
-    debugger;
-
     const cs = api.jscodeshift;
     const root = cs(fileInfo.source);
 
